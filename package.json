@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/UpLiftL1f3/TeamInfoGenerator#readme",
   "dependencies": {
-    "inquirer": "^8.2.2"
+    "inquirer": "^8.2.2",
+    "nodemon": "^2.0.16"
   }
 }

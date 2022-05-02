@@ -3,233 +3,182 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
 
-// attempt 1 i know its WRONG
-// // Number of Employees
-// let numEmployees = 5;
-
-// let questions = [];
-
-// // for loop based on number of employees
-// for (let i = numEmployees; i < numEmployees.length; i++) {
-//   questions.push({});
-// }
-
-// Attempt 2
-
-// const questions = [
-//   // team manager
-//   {
-//     type: 'input',
-//     message: "What is the team manager's name?",
-//     name: 'team.manager.name',
-//   },
-//   {
-//     type: 'input',
-//     message: "What is the team manager's employee ID?",
-//     name: 'team.manager.employeeID',
-//   },
-//   {
-//     type: 'input',
-//     message: "What is the team manager's email address?",
-//     name: 'team.manager.email',
-//   },
-//   {
-//     type: 'input',
-//     message: "What is the team manager's office number?",
-//     name: 'team.manager.officeNumber',
-//   },
-//   // add employee 1
-//   {
-//     type: 'list',
-//     name: 'add.employee.one',
-//     message: 'Would you like to add an engineer or an inter?',
-//     choices: ['engineer', 'intern', 'no more employees'],
-//   },
-//   {
-//     type: 'input',
-//     name: 'engineerOne.name',
-//     message: "What is the engineer's name?",
-//     name: 'engineer.one.name',
-//     when(answers) {
-//       return answers.add.employee.one === 'engineer';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'engineerOne.employeeID',
-//     message: "What is the engineer's employee ID?",
-//     when(answers) {
-//       return answers.add.employee.one === 'engineer';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'engineerOne.email',
-//     message: "What is the engineer's email address?",
-//     when(answers) {
-//       return answers.add.employee.one === 'engineer';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'engineerOne.officeNumber',
-//     message: "What is the engineer's office number?",
-//     when(answers) {
-//       return answers.add.employee.one === 'engineer';
-//     },
-//   },
-//   // Intern 1
-//   {
-//     type: 'input',
-//     name: 'internOne.name',
-//     message: "What is the intern's name?",
-//     when(answers) {
-//       return answers.add.employee.one === 'intern';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'internOne.employeeID',
-//     message: "What is the intern's employee ID?",
-//     when(answers) {
-//       return answers.add.employee.one === 'intern';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'internOne.email',
-//     message: "What is the intern's email address?",
-//     when(answers) {
-//       return answers.add.employee.one === 'intern';
-//     },
-//   },
-//   {
-//     type: 'input',
-//     name: 'internOne.officeNumber',
-//     message: "What is the intern's office number?",
-//     when(answers) {
-//       return answers.add.employee.one === 'intern';
-//     },
-//   },
-// ];
-
 // Attempt 3
 let engineerCount = 0;
 let internCount = 0;
+let promptAnswers;
+let teamArr = [];
 
+// Initial questions which includes the manager's info
 const StarterQuestions = [
   // team manager
   {
     type: 'input',
     message: "What is the team manager's name?",
-    name: 'team.manager.name',
+    name: 'name',
   },
   {
     type: 'input',
     message: "What is the team manager's employee ID?",
-    name: 'team.manager.employeeID',
+    name: 'employeeID',
   },
   {
     type: 'input',
     message: "What is the team manager's email address?",
-    name: 'team.manager.email',
+    name: 'email',
   },
   {
     type: 'input',
     message: "What is the team manager's office number?",
-    name: 'team.manager.officeNumber',
+    name: 'officeNumber',
   },
   // add employee
   {
     type: 'list',
-    name: 'add.employee',
-    message: 'Would you like to add an engineer or an inter?',
+    name: 'addEmployee',
+    message: 'Would you like to add an engineer, an inter or exit to website?',
     choices: ['engineer', 'intern', 'no more employees'],
   },
 ];
 
+// Engineering employee information
 let engineerQuestions = [
   {
     type: 'input',
-    name: `engineer${engineerCount}.name`,
+    name: `name`,
     message: "What is the engineer's name?",
-    when(answers) {
-      return answers.add.employee.one === 'engineer';
-    },
   },
   {
     type: 'input',
-    name: `engineer${engineerCount}.employeeID`,
+    name: `employeeID`,
     message: "What is the engineer's employee ID?",
-    when(answers) {
-      return answers.add.employee.one === 'engineer';
-    },
   },
   {
     type: 'input',
-    name: `engineer${engineerCount}.email`,
+    name: `email`,
     message: "What is the engineer's email address?",
-    when(answers) {
-      return answers.add.employee.one === 'engineer';
-    },
   },
   {
     type: 'input',
-    name: `engineer${engineerCount}.officeNumber`,
+    name: `officeNumber`,
     message: "What is the engineer's office number?",
-    when(answers) {
-      return answers.add.employee.one === 'engineer';
-    },
   },
   {
     type: 'list',
-    name: 'engineerAdd.employee',
+    name: 'addEmployee',
     message: 'Would you like to add an engineer or an inter?',
     choices: ['engineer', 'intern', 'no more employees'],
   },
 ];
 
+// Intern employee information
 let internQuestions = [
   {
     type: 'input',
-    name: `intern${internCount}.name`,
+    name: `name`,
     message: "What is the intern's name?",
-    when(answers) {
-      return answers.add.employee.one === 'intern';
-    },
   },
   {
     type: 'input',
-    name: `intern${internCount}.employeeID`,
+    name: `employeeID`,
     message: "What is the intern's employee ID?",
-    when(answers) {
-      return answers.add.employee.one === 'intern';
-    },
   },
   {
     type: 'input',
-    name: `intern${internCount}.email`,
+    name: `email`,
     message: "What is the intern's email address?",
-    when(answers) {
-      return answers.add.employee.one === 'intern';
-    },
   },
   {
     type: 'input',
-    name: `intern${internCount}.officeNumber`,
+    name: `officeNumber`,
     message: "What is the intern's office number?",
-    when(answers) {
-      return answers.add.employee.one === 'intern';
-    },
+  },
+  {
+    type: 'list',
+    name: 'addEmployee',
+    message: 'Would you like to add an engineer or an inter?',
+    choices: ['engineer', 'intern', 'no more employees'],
   },
 ];
 
-inquirer.prompt(StarterQuestions).then((answers) => {
-  if (answers.add.employee === 'engineer') {
-    engineerCount++;
-    inquirer.prompt(engineerQuestions).then((engineerAnswers) => {
-      while (engineerAnswers.engineerAdd.employee === 'engineer')
-        engineerCount++;
-    });
+// inquirer.prompt(StarterQuestions).then((answers) => {
+//   if (answers.add.employee === 'engineer') {
+//     engineerCount++;
+//     inquirer.prompt(engineerQuestions).then((engineerAnswers) => {
+//       while (engineerAnswers.engineerAdd.employee === 'engineer')
+//         engineerCount++;
+//     });
+//   }
+// });
+
+// console.log(starterAnswers.add.employee);
+
+// Function Declarations
+// Initializing initial questions (manager info)
+async function starterQuestions() {
+  const starterAnswers = await inquirer.prompt(StarterQuestions);
+  const managerObj = {
+    position: 'Manager',
+    name: starterAnswers.name,
+    email: starterAnswers.email,
+    employeeID: starterAnswers.employeeID,
+    officeNumber: starterAnswers.officeNumber,
+  };
+  teamArr.push(managerObj);
+  console.log(teamArr);
+  promptAnswers = starterAnswers;
+  console.log(promptAnswers);
+}
+
+// Initializing Engineer info questions
+async function engineerQuestions() {
+  const engineerAnswers = await inquirer.prompt(engineerQuestions);
+  const engineerObj = {
+    position: 'Engineer',
+    name: engineerAnswers.name,
+    email: engineerAnswers.email,
+    employeeID: engineerAnswers.employeeID,
+    officeNumber: engineerAnswers.officeNumber,
+  };
+  teamArr.push(engineerObj);
+  console.log(teamArr);
+  promptAnswers = engineerAnswers;
+  console.log(promptAnswers);
+}
+
+// Initializing Intern info questions
+async function internQuestions() {
+  const internAnswers = await inquirer.prompt(internQuestions);
+  const internObj = {
+    position: 'Intern',
+    name: internAnswers.name,
+    email: internAnswers.email,
+    employeeID: internAnswers.employeeID,
+    officeNumber: internAnswers.officeNumber,
+  };
+  teamArr.push(internObj);
+  console.log(teamArr);
+  promptAnswers = internAnswers;
+  console.log(promptAnswers);
+}
+
+async function main() {
+  await starterQuestions();
+  while (promptAnswers.addEmployee == 'no more employees') {
+    if (promptAnswers.addEmployee === 'engineer') {
+      engineerQuestions();
+    } else if (promptAnswers.addEmployee === 'intern') {
+      internQuestions();
+    }
+    return;
   }
-});
+}
+
+main();
+
+// inquirer.prompt(StarterQuestions);
+// while (
+//   starterAnswers.add.employee !== 'no more employees' ||
+//   engineerQuestions.add.employee !== 'no more employees' ||
+//   internQuestions.add.employee !== 'no more employees'
+// ) {}
