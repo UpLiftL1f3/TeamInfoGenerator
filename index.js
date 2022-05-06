@@ -10,7 +10,7 @@ let promptAnswers;
 let teamArr = [];
 
 // Initial questions which includes the manager's info
-const StarterQuestions = [
+const starterQuestions = [
   // team manager
   {
     type: 'input',
@@ -37,7 +37,7 @@ const StarterQuestions = [
     type: 'list',
     name: 'addEmployee',
     message: 'Would you like to add an engineer, an inter or exit to website?',
-    choices: ['engineer', 'intern', 'no more employees'],
+    choices: ['engineer', 'intern', 'exit to website'],
   },
 ];
 
@@ -66,8 +66,8 @@ let engineerQuestions = [
   {
     type: 'list',
     name: 'addEmployee',
-    message: 'Would you like to add an engineer or an inter?',
-    choices: ['engineer', 'intern', 'no more employees'],
+    message: 'Would you like to add an engineer, an inter, or exit to website?',
+    choices: ['engineer', 'intern', 'exit to website'],
   },
 ];
 
@@ -96,27 +96,15 @@ let internQuestions = [
   {
     type: 'list',
     name: 'addEmployee',
-    message: 'Would you like to add an engineer or an inter?',
-    choices: ['engineer', 'intern', 'no more employees'],
+    message: 'Would you like to add an engineer, an inter, exit to website?',
+    choices: ['engineer', 'intern', 'exit to website'],
   },
 ];
 
-// inquirer.prompt(StarterQuestions).then((answers) => {
-//   if (answers.add.employee === 'engineer') {
-//     engineerCount++;
-//     inquirer.prompt(engineerQuestions).then((engineerAnswers) => {
-//       while (engineerAnswers.engineerAdd.employee === 'engineer')
-//         engineerCount++;
-//     });
-//   }
-// });
-
-// console.log(starterAnswers.add.employee);
-
 // Function Declarations
 // Initializing initial questions (manager info)
-async function starterQuestions() {
-  const starterAnswers = await inquirer.prompt(StarterQuestions);
+async function starterFunction() {
+  const starterAnswers = await inquirer.prompt(starterQuestions);
   const managerObj = {
     position: 'Manager',
     name: starterAnswers.name,
@@ -127,11 +115,11 @@ async function starterQuestions() {
   teamArr.push(managerObj);
   console.log(teamArr);
   promptAnswers = starterAnswers;
-  console.log(promptAnswers);
+  console.log(promptAnswers.addEmployee);
 }
 
 // Initializing Engineer info questions
-async function engineerQuestions() {
+async function engineerFunction() {
   const engineerAnswers = await inquirer.prompt(engineerQuestions);
   const engineerObj = {
     position: 'Engineer',
@@ -147,7 +135,7 @@ async function engineerQuestions() {
 }
 
 // Initializing Intern info questions
-async function internQuestions() {
+async function internFunction() {
   const internAnswers = await inquirer.prompt(internQuestions);
   const internObj = {
     position: 'Intern',
@@ -163,12 +151,12 @@ async function internQuestions() {
 }
 
 async function main() {
-  await starterQuestions();
-  while (promptAnswers.addEmployee == 'no more employees') {
+  await starterFunction();
+  while (!promptAnswers.addEmployee == 'exit to website') {
     if (promptAnswers.addEmployee === 'engineer') {
-      engineerQuestions();
+      engineerFunction();
     } else if (promptAnswers.addEmployee === 'intern') {
-      internQuestions();
+      internFunction();
     }
     return;
   }
