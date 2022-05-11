@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#nav-title {
+  vertical-align: middle;
+  text-align: center;
+  font-size: 200%;
+}
